@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             targetNamespace="http://www.orderflow.com/bpmn">
+
+    <process id="food-order-process" name="Food Order Process" isExecutable="true">
+
+        <startEvent id="start" name="Order Received"/>
+
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="validateOrder"/>
+
+        <!-- Validation Service Task -->
+        <serviceTask id="validateOrder" name="Validate Order"
+                     flowable:delegateExpression="${validateOrderDelegate}"/>
+
+        <sequenceFlow id="flow2" sourceRef="validateOrder" targetRef="checkRefrigeration"/>
+
+        <!-- Gateway: Check if requires refrigeration -->
+        <exclusiveGateway id="checkRefrigeration" name="Requires Refrigeration?"/>
+
+        <sequenceFlow id="needsRefrigeration" name="Yes" sourceRef="checkRefrigeration" targetRef="foodSafetyApproval">
+            <conditionExpression xsi:type="tFormalExpression">
+                ${requiresRefrigeration == true}
+            </conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="noRefrigeration" name="No" sourceRef="checkRefrigeration" targetRef="processPayment">
+            <conditionExpression xsi:type="tFormalExpression">
+                ${requiresRefrigeration == false}
+            </conditionExpression>
+        </sequenceFlow>
+
+        <!-- Food Safety Approval User Task -->
+        <userTask id="foodSafetyApproval" name="Food Safety Approval"
+                  flowable:candidateGroups="food-safety-team">
+            <documentation>Refrigerated food requires safety compliance approval</documentation>
+        </userTask>
+
+        <sequenceFlow id="flow3" sourceRef="foodSafetyApproval" targetRef="processPayment"/>
+
+        <!-- Payment Processing Service Task -->
+        <serviceTask id="processPayment" name="Process Payment"
+                     flowable:delegateExpression="${processPaymentDelegate}"/>
+
+        <sequenceFlow id="flow4" sourceRef="processPayment" targetRef="fulfillment"/>
+
+        <!-- Fulfillment Service Task -->
+        <serviceTask id="fulfillment" name="Fulfill Order"
+                     flowable:delegateExpression="${fulfillmentDelegate}"/>
+
+        <sequenceFlow id="flow5" sourceRef="fulfillment" targetRef="checkPerishable"/>
+
+        <!-- Gateway: Check if perishable for shipping method -->
+        <exclusiveGateway id="checkPerishable" name="Perishable?"/>
+
+        <sequenceFlow id="perishable" name="Yes" sourceRef="checkPerishable" targetRef="refrigeratedShipping">
+            <conditionExpression xsi:type="tFormalExpression">
+                ${requiresRefrigeration == true}
+            </conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="nonPerishable" name="No" sourceRef="checkPerishable" targetRef="standardShipping">
+            <conditionExpression xsi:type="tFormalExpression">
+                ${requiresRefrigeration == false}
+            </conditionExpression>
+        </sequenceFlow>
+
+        <!-- Refrigerated Shipping Service Task -->
+        <serviceTask id="refrigeratedShipping" name="Refrigerated Express Shipping"
+                     flowable:delegateExpression="${foodShippingDelegate}"/>
+
+        <sequenceFlow id="flow6" sourceRef="refrigeratedShipping" targetRef="end"/>
+
+        <!-- Standard Shipping Service Task -->
+        <serviceTask id="standardShipping" name="Standard Food Shipping"
+                     flowable:delegateExpression="${foodShippingDelegate}"/>
+
+        <sequenceFlow id="flow7" sourceRef="standardShipping" targetRef="end"/>
+
+        <endEvent id="end" name="Order Completed"/>
+
+    </process>
+
+</definitions>

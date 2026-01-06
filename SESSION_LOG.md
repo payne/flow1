@@ -1,0 +1,1 @@
+docs/sessions/session_20260106_initial_setup.md

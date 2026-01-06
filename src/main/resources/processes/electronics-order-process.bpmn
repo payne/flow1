@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             targetNamespace="http://www.orderflow.com/bpmn">
+
+    <process id="electronics-order-process" name="Electronics Order Process" isExecutable="true">
+
+        <startEvent id="start" name="Order Received"/>
+
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="validateOrder"/>
+
+        <!-- Validation Service Task -->
+        <serviceTask id="validateOrder" name="Validate Order"
+                     flowable:delegateExpression="${validateOrderDelegate}"/>
+
+        <sequenceFlow id="flow2" sourceRef="validateOrder" targetRef="checkValue"/>
+
+        <!-- Gateway: Check if high value (>$1000) -->
+        <exclusiveGateway id="checkValue" name="Value > $1000?"/>
+
+        <sequenceFlow id="highValue" name="Yes" sourceRef="checkValue" targetRef="qaApproval">
+            <conditionExpression xsi:type="tFormalExpression">
+                ${totalAmount > 1000}
+            </conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="normalValue" name="No" sourceRef="checkValue" targetRef="processPayment">
+            <conditionExpression xsi:type="tFormalExpression">
+                ${totalAmount <= 1000}
+            </conditionExpression>
+        </sequenceFlow>
+
+        <!-- QA Approval User Task -->
+        <userTask id="qaApproval" name="QA Approval Required"
+                  flowable:candidateGroups="qa-team">
+            <documentation>High value electronics order requires quality assurance approval</documentation>
+        </userTask>
+
+        <sequenceFlow id="flow3" sourceRef="qaApproval" targetRef="processPayment"/>
+
+        <!-- Payment Processing Service Task -->
+        <serviceTask id="processPayment" name="Process Payment"
+                     flowable:delegateExpression="${processPaymentDelegate}"/>
+
+        <sequenceFlow id="flow4" sourceRef="processPayment" targetRef="fulfillment"/>
+
+        <!-- Fulfillment Service Task -->
+        <serviceTask id="fulfillment" name="Fulfill Order"
+                     flowable:delegateExpression="${fulfillmentDelegate}"/>
+
+        <sequenceFlow id="flow5" sourceRef="fulfillment" targetRef="shipping"/>
+
+        <!-- Electronics Shipping Service Task -->
+        <serviceTask id="shipping" name="Ship Electronics Order"
+                     flowable:delegateExpression="${electronicsShippingDelegate}"/>
+
+        <sequenceFlow id="flow6" sourceRef="shipping" targetRef="end"/>
+
+        <endEvent id="end" name="Order Completed"/>
+
+    </process>
+
+</definitions>

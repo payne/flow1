@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(tree:*)",
+      "Bash(chmod:*)",
+      "Bash(ln:*)",
+      "Bash(mvn validate:*)",
+      "WebSearch",
+      "WebFetch(domain:mvnrepository.com)",
+      "Bash(mvn clean spring-boot:run:*)",
+      "Bash(mvn clean compile:*)",
+      "Bash(mvn dependency:tree:*)",
+      "Bash(java -version:*)"
+    ]
+  }
+}

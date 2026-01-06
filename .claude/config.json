@@ -1,0 +1,12 @@
+{
+  "sessionLogging": {
+    "enabled": true,
+    "directory": "docs/sessions",
+    "format": "markdown",
+    "includeTimestamps": true,
+    "autoSave": true
+  },
+  "hooks": {
+    "onSessionEnd": ".claude/hooks/session-logger.sh"
+  }
+}

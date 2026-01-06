@@ -1,0 +1,146 @@
+/* Custom styles for Order Management System */
+
+:root {
+    --primary-color: #0d6efd;
+    --success-color: #198754;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #0dcaf0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+
+.status-badge {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+}
+
+.status-pending {
+    background-color: var(--warning-color);
+    color: #000;
+}
+
+.status-completed {
+    background-color: var(--success-color);
+    color: #fff;
+}
+
+.status-failed {
+    background-color: var(--danger-color);
+    color: #fff;
+}
+
+.status-processing {
+    background-color: var(--info-color);
+    color: #000;
+}
+
+.category-electronics {
+    color: #6c63ff;
+    font-weight: 600;
+}
+
+.category-clothing {
+    color: #ff6584;
+    font-weight: 600;
+}
+
+.category-food {
+    color: #4caf50;
+    font-weight: 600;
+}
+
+.low-stock {
+    color: var(--danger-color);
+    font-weight: bold;
+}
+
+.btn-action {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f3f5;
+}
+
+.dashboard-card {
+    text-align: center;
+    padding: 2rem;
+}
+
+.dashboard-card h3 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-card p {
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+.order-timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.order-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.5rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #dee2e6;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 1.5rem;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -1.45rem;
+    top: 0.25rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.timeline-item.active::before {
+    background: var(--success-color);
+    box-shadow: 0 0 0 2px var(--success-color);
+}
+
+footer {
+    margin-top: 3rem;
+    padding: 2rem 0;
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+}

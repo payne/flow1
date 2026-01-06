@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:flowable="http://flowable.org/bpmn"
+             targetNamespace="http://www.orderflow.com/bpmn">
+
+    <process id="clothing-order-process" name="Clothing Order Process" isExecutable="true">
+
+        <startEvent id="start" name="Order Received"/>
+
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="validateOrder"/>
+
+        <!-- Validation Service Task -->
+        <serviceTask id="validateOrder" name="Validate Order"
+                     flowable:delegateExpression="${validateOrderDelegate}"/>
+
+        <sequenceFlow id="flow2" sourceRef="validateOrder" targetRef="processPayment"/>
+
+        <!-- Payment Processing Service Task -->
+        <serviceTask id="processPayment" name="Process Payment"
+                     flowable:delegateExpression="${processPaymentDelegate}"/>
+
+        <sequenceFlow id="flow3" sourceRef="processPayment" targetRef="fulfillment"/>
+
+        <!-- Fulfillment Service Task -->
+        <serviceTask id="fulfillment" name="Fulfill Order"
+                     flowable:delegateExpression="${fulfillmentDelegate}"/>
+
+        <sequenceFlow id="flow4" sourceRef="fulfillment" targetRef="shipping"/>
+
+        <!-- Clothing Shipping Service Task -->
+        <serviceTask id="shipping" name="Ship Clothing Order"
+                     flowable:delegateExpression="${clothingShippingDelegate}"/>
+
+        <sequenceFlow id="flow5" sourceRef="shipping" targetRef="end"/>
+
+        <endEvent id="end" name="Order Completed"/>
+
+    </process>
+
+</definitions>

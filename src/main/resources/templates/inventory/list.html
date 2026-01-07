@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Inventory</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Inventory</h1>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th scope="col">SKU</th>
+                <th scope="col">Item Name</th>
+                <th scope="col">Category</th>
+                <th scope="col">Available</th>
+                <th scope="col">Reserved</th>
+                <th scope="col">Total</th>
+                <th scope="col">Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="inv : ${inventoryList}">
+                <td th:text="${inv.item.sku}">SKU123</td>
+                <td th:text="${inv.item.name}">Widget</td>
+                <td th:text="${inv.item.category}">ELECTRONICS</td>
+                <td th:text="${inv.quantityAvailable}">50</td>
+                <td th:text="${inv.quantityReserved}">0</td>
+                <td th:text="${inv.quantityAvailable + inv.quantityReserved}">50</td>
+                <td>
+                    <span class="badge bg-success" th:if="${!inv.isLowStock()}">In Stock</span>
+                    <span class="badge bg-warning text-dark" th:if="${inv.isLowStock() && inv.quantityAvailable > 0}">Low Stock</span>
+                    <span class="badge bg-danger" th:if="${inv.quantityAvailable == 0}">Out of Stock</span>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(inventoryList)}">
+                <td colspan="7" class="text-center">No inventory items found.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

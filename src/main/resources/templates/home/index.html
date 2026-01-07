@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Home</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="bg-light p-5 rounded">
+        <h1>Welcome to OrderFlow</h1>
+        <p class="lead">A comprehensive order management system powered by Spring Boot and Flowable.</p>
+        <hr class="my-4">
+        <p>Manage your orders, customers, and inventory efficiently.</p>
+        <a class="btn btn-primary btn-lg" th:href="@{/orders/create}" role="button">Create New Order</a>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Orders</h5>
+                    <p class="card-text">View and manage customer orders.</p>
+                    <a th:href="@{/orders}" class="btn btn-outline-primary">Go to Orders</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Customers</h5>
+                    <p class="card-text">Manage customer information.</p>
+                    <a th:href="@{/customers}" class="btn btn-outline-primary">Go to Customers</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Inventory</h5>
+                    <p class="card-text">Track stock levels and items.</p>
+                    <a th:href="@{/inventory}" class="btn btn-outline-primary">Go to Inventory</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

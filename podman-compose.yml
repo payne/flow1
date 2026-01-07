@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: orderflow-postgres
+    environment:
+      POSTGRES_DB: orderflow
+      POSTGRES_USER: orderflow_user
+      POSTGRES_PASSWORD: orderflow_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:Z
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:Z
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orderflow_user -d orderflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - orderflow-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: orderflow-app
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_APP_JDBC_URL: jdbc:postgresql://postgres:5432/orderflow?currentSchema=app_schema
+      SPRING_DATASOURCE_APP_USERNAME: orderflow_user
+      SPRING_DATASOURCE_APP_PASSWORD: orderflow_pass
+      SPRING_DATASOURCE_FLOWABLE_JDBC_URL: jdbc:postgresql://postgres:5432/orderflow?currentSchema=flowable_schema
+      SPRING_DATASOURCE_FLOWABLE_USERNAME: orderflow_user
+      SPRING_DATASOURCE_FLOWABLE_PASSWORD: orderflow_pass
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - orderflow-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  orderflow-network:
+    driver: bridge

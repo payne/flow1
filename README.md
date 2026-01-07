@@ -104,9 +104,16 @@ See [`docs/SESSION_LOGGING_SETUP.md`](docs/SESSION_LOGGING_SETUP.md) for details
 
 ### Step 1: Start PostgreSQL Database
 
+**Using Docker:**
 ```bash
 cd docker
 docker-compose up -d
+```
+
+**Using Podman:**
+```bash
+cd docker
+podman-compose -f podman-compose.yml up -d
 ```
 
 This starts:
@@ -145,6 +152,25 @@ mvn spring-boot:run
 ```
 
 The application starts on **http://localhost:8080**
+
+## Running with Podman
+
+To run the full stack (PostgreSQL + Application) using Podman:
+
+1. Ensure `podman` and `podman-compose` are installed.
+2. Run the helper script:
+
+```bash
+./run-podman.sh
+```
+
+Or manually:
+
+```bash
+podman-compose -f podman-compose.yml up -d
+```
+
+This uses `podman-compose.yml` which includes necessary SELinux volume configurations (`:Z`).
 
 ### Step 5: Verify Startup
 

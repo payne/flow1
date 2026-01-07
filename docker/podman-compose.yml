@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: orderflow-db
+    environment:
+      POSTGRES_DB: orderflow
+      POSTGRES_USER: orderflow_user
+      POSTGRES_PASSWORD: orderflow_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:Z
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:Z
+    networks:
+      - orderflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orderflow_user -d orderflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: orderflow-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@orderflow.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    networks:
+      - orderflow-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+
+networks:
+  orderflow-network:
+    driver: bridge

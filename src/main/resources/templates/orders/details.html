@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Order Details</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2" th:text="'Order ' + ${order.orderNumber}">Order #</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <span class="badge bg-secondary fs-6" th:text="${order.status}">STATUS</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">Customer Information</div>
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${order.customer.firstName + ' ' + order.customer.lastName}">Name</h5>
+                    <p class="card-text" th:text="${order.customer.email}">Email</p>
+                    <p class="card-text" th:if="${order.customer.phone}" th:text="${order.customer.phone}">Phone</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">Shipping Details</div>
+                <div class="card-body">
+                    <p class="card-text" th:text="${order.shippingAddressLine1}">Address 1</p>
+                    <p class="card-text" th:if="${order.shippingAddressLine2}" th:text="${order.shippingAddressLine2}">Address 2</p>
+                    <p class="card-text">
+                        <span th:text="${order.shippingCity}">City</span>,
+                        <span th:text="${order.shippingState}">State</span>
+                        <span th:text="${order.shippingZipCode}">Zip</span>
+                    </p>
+                    <p class="card-text" th:text="${order.shippingCountry}">Country</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Items</h3>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Unit Price</th>
+                <th scope="col">Subtotal</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${order.orderItems}">
+                <td th:text="${item.item.name}">Product Name</td>
+                <td th:text="${item.quantity}">1</td>
+                <td th:text="${'$' + item.unitPrice}">$10.00</td>
+                <td th:text="${'$' + item.subtotal}">$10.00</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3" class="text-end fw-bold">Total:</td>
+                <td class="fw-bold" th:text="${'$' + order.totalAmount}">$100.00</td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="mt-4">
+        <a th:href="@{/orders}" class="btn btn-secondary">Back to Orders</a>
+    </div>
+</div>
+</body>
+</html>

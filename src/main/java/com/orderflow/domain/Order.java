@@ -1,6 +1,8 @@
 package com.orderflow.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,6 +36,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, columnDefinition = "order_status")
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     private OrderStatus status = OrderStatus.PENDING;
 
     @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)

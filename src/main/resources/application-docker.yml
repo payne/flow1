@@ -33,7 +33,6 @@ spring:
 
 flowable:
   database-schema-update: true
-  database-schema: flowable_schema
   async-executor-activate: true
   process-definition-cache-limit: 100
 

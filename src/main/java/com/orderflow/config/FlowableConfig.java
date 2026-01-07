@@ -24,7 +24,6 @@ public class FlowableConfig {
         return engineConfiguration -> {
             engineConfiguration.setDataSource(flowableDataSource);
             engineConfiguration.setDatabaseSchemaUpdate("true");
-            engineConfiguration.setDatabaseSchema("flowable_schema");
             engineConfiguration.setAsyncExecutorActivate(true);
         };
     }

@@ -21,13 +21,13 @@
 
         <sequenceFlow id="needsRefrigeration" name="Yes" sourceRef="checkRefrigeration" targetRef="foodSafetyApproval">
             <conditionExpression xsi:type="tFormalExpression">
-                ${requiresRefrigeration == true}
+                <![CDATA[${requiresRefrigeration == true}]]>
             </conditionExpression>
         </sequenceFlow>
 
         <sequenceFlow id="noRefrigeration" name="No" sourceRef="checkRefrigeration" targetRef="processPayment">
             <conditionExpression xsi:type="tFormalExpression">
-                ${requiresRefrigeration == false}
+                <![CDATA[${requiresRefrigeration == false}]]>
             </conditionExpression>
         </sequenceFlow>
 
@@ -56,13 +56,13 @@
 
         <sequenceFlow id="perishable" name="Yes" sourceRef="checkPerishable" targetRef="refrigeratedShipping">
             <conditionExpression xsi:type="tFormalExpression">
-                ${requiresRefrigeration == true}
+                <![CDATA[${requiresRefrigeration == true}]]>
             </conditionExpression>
         </sequenceFlow>
 
         <sequenceFlow id="nonPerishable" name="No" sourceRef="checkPerishable" targetRef="standardShipping">
             <conditionExpression xsi:type="tFormalExpression">
-                ${requiresRefrigeration == false}
+                <![CDATA[${requiresRefrigeration == false}]]>
             </conditionExpression>
         </sequenceFlow>
 

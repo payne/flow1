@@ -21,13 +21,13 @@
 
         <sequenceFlow id="highValue" name="Yes" sourceRef="checkValue" targetRef="qaApproval">
             <conditionExpression xsi:type="tFormalExpression">
-                ${totalAmount > 1000}
+                <![CDATA[${totalAmount > 1000}]]>
             </conditionExpression>
         </sequenceFlow>
 
         <sequenceFlow id="normalValue" name="No" sourceRef="checkValue" targetRef="processPayment">
             <conditionExpression xsi:type="tFormalExpression">
-                ${totalAmount <= 1000}
+                <![CDATA[${totalAmount <= 1000}]]>
             </conditionExpression>
         </sequenceFlow>
 

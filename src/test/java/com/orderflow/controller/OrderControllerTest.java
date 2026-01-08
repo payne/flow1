@@ -2,6 +2,7 @@ package com.orderflow.controller;
 
 import com.orderflow.domain.Customer;
 import com.orderflow.domain.Order;
+import com.orderflow.dto.OrderApprovalDTO;
 import com.orderflow.service.CustomerService;
 import com.orderflow.service.InventoryService;
 import com.orderflow.service.OrderService;
@@ -10,14 +11,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(OrderController.class)
@@ -55,11 +61,14 @@ public class OrderControllerTest {
         order.setId(1L);
         order.setCustomer(new Customer());
         when(orderService.getOrderById(anyLong())).thenReturn(Optional.of(order));
+        when(orderWorkflowService.getActiveTasksForOrder(anyLong())).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/orders/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("orders/details"))
-                .andExpect(model().attributeExists("order"));
+                .andExpect(model().attributeExists("order"))
+                .andExpect(model().attributeExists("activeTasks"))
+                .andExpect(model().attributeExists("approvalDTO"));
     }
 
     @Test
@@ -73,5 +82,17 @@ public class OrderControllerTest {
                 .andExpect(model().attributeExists("orderDTO"))
                 .andExpect(model().attributeExists("customers"))
                 .andExpect(model().attributeExists("inventoryItems"));
+    }
+
+    @Test
+    public void testCompleteTask() throws Exception {
+        mockMvc.perform(post("/orders/1/tasks/123/complete")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("approved", "true")
+                        .param("comments", "Great job"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/orders/1"));
+
+        verify(orderService).approveOrder(eq(1L), eq("123"), any(OrderApprovalDTO.class));
     }
 }

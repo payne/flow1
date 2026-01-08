@@ -1,12 +1,15 @@
 package com.orderflow.service;
 
 import com.orderflow.domain.*;
+import com.orderflow.dto.OrderApprovalDTO;
 import com.orderflow.dto.OrderDTO;
 import com.orderflow.dto.OrderItemDTO;
+import com.orderflow.repository.ApprovalRepository;
 import com.orderflow.repository.CustomerRepository;
 import com.orderflow.repository.ItemRepository;
 import com.orderflow.repository.OrderRepository;
 import com.orderflow.service.workflow.OrderWorkflowService;
+import org.flowable.task.api.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +41,9 @@ public class OrderServiceImplTest {
 
     @Mock
     private OrderWorkflowService workflowService;
+
+    @Mock
+    private ApprovalRepository approvalRepository;
 
     @InjectMocks
     private OrderServiceImpl orderService;
@@ -233,5 +239,23 @@ public class OrderServiceImplTest {
 
         assertEquals(OrderStatus.CANCELLED, order.getStatus());
         assertNotNull(order.getCompletedAt());
+    }
+
+    @Test
+    public void testApproveOrder() {
+        OrderApprovalDTO approvalDTO = new OrderApprovalDTO();
+        approvalDTO.setApproved(true);
+        approvalDTO.setComments("Looks good");
+
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+
+        Task task = mock(Task.class);
+        when(task.getName()).thenReturn("QA Approval");
+        when(workflowService.getTask("taskId123")).thenReturn(task);
+
+        orderService.approveOrder(1L, "taskId123", approvalDTO);
+
+        verify(approvalRepository, times(1)).save(any(Approval.class));
+        verify(workflowService, times(1)).completeTask(eq("taskId123"), anyMap());
     }
 }

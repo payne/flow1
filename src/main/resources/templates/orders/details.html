@@ -72,6 +72,70 @@
     <div class="mt-4">
         <a th:href="@{/orders}" class="btn btn-secondary">Back to Orders</a>
     </div>
+
+    <!-- Workflow Tasks Section -->
+    <div class="mt-5" th:if="${!activeTasks.empty}">
+        <h3>Pending Actions</h3>
+        <div class="card mb-3" th:each="task : ${activeTasks}">
+            <div class="card-header bg-warning text-dark">
+                <span th:text="${task.name}">Task Name</span>
+            </div>
+            <div class="card-body">
+                <p class="card-text" th:if="${task.description}" th:text="${task.description}">Task Description</p>
+                <form th:action="@{/orders/{id}/tasks/{taskId}/complete(id=${order.id}, taskId=${task.id})}"
+                      method="post" th:object="${approvalDTO}">
+                    <div class="mb-3">
+                        <label class="form-label">Decision</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" th:field="*{approved}" value="true" id="approve" required>
+                                <label class="form-check-label" for="approve">Approve</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" th:field="*{approved}" value="false" id="reject">
+                                <label class="form-check-label" for="reject">Reject</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="comments" class="form-label">Comments</label>
+                        <textarea class="form-control" id="comments" th:field="*{comments}" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Decision</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Approval History Section -->
+    <div class="mt-5" th:if="${!order.approvals.empty}">
+        <h3>Approval History</h3>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Approver</th>
+                    <th>Decision</th>
+                    <th>Comments</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="approval : ${order.approvals}">
+                    <td th:text="${approval.approvalType}">QA Approval</td>
+                    <td th:text="${approval.approverName}">System User</td>
+                    <td>
+                        <span th:if="${approval.approved}" class="badge bg-success">Approved</span>
+                        <span th:unless="${approval.approved}" class="badge bg-danger">Rejected</span>
+                    </td>
+                    <td th:text="${approval.approvalComments}">Looks good</td>
+                    <td th:text="${#temporals.format(approval.approvedAt, 'yyyy-MM-dd HH:mm')}">2023-01-01 12:00</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 </body>
 </html>

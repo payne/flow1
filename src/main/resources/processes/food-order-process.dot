@@ -1,0 +1,25 @@
+digraph {
+	graph [bgcolor=white rankdir=LR]
+	124626765564000 [label="" fillcolor=green fontsize=12 shape=circle style=filled]
+	124626767131328 [label="Validate Order" fontsize=12 shape=box]
+	124626765426288 [label=X fontsize=12 shape=diamond]
+	124626766003616 [label="Food Safety Approval" fontsize=12 shape=box]
+	124626764072432 [label="Process Payment" fontsize=12 shape=box]
+	124626764072672 [label="Fulfill Order" fontsize=12 shape=box]
+	124626764072720 [label=X fontsize=12 shape=diamond]
+	124626764072864 [label="Refrigerated Express Shipping" fontsize=12 shape=box]
+	124626764072960 [label="Standard Food Shipping" fontsize=12 shape=box]
+	124626764073248 [label="" fillcolor=orange fontsize=12 shape=circle style=filled]
+	124626765564000 -> 124626767131328
+	124626767131328 -> 124626765426288
+	124626765426288 -> 124626764072432
+	124626765426288 -> 124626766003616
+	124626766003616 -> 124626764072432
+	124626764072432 -> 124626764072672
+	124626764072672 -> 124626764072720
+	124626764072720 -> 124626764072864
+	124626764072720 -> 124626764072960
+	124626764072864 -> 124626764073248
+	124626764072960 -> 124626764073248
+	overlap=false
+}

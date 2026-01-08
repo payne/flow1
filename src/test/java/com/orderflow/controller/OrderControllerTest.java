@@ -61,11 +61,14 @@ public class OrderControllerTest {
         order.setId(1L);
         order.setCustomer(new Customer());
         when(orderService.getOrderById(anyLong())).thenReturn(Optional.of(order));
+        when(orderWorkflowService.getActiveTasksForOrder(anyLong())).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/orders/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("orders/details"))
-                .andExpect(model().attributeExists("order"));
+                .andExpect(model().attributeExists("order"))
+                .andExpect(model().attributeExists("activeTasks"))
+                .andExpect(model().attributeExists("approvalDTO"));
     }
 
     @Test

@@ -6,6 +6,7 @@ import com.orderflow.dto.OrderItemDTO;
 import com.orderflow.service.CustomerService;
 import com.orderflow.service.InventoryService;
 import com.orderflow.service.OrderService;
+import com.orderflow.service.workflow.OrderWorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,9 @@ public class OrderController {
     @Autowired
     private InventoryService inventoryService;
 
+    @Autowired
+    private OrderWorkflowService workflowService;
+
     @GetMapping
     public String listOrders(Model model) {
         model.addAttribute("orders", orderService.getAllOrders());
@@ -36,6 +40,8 @@ public class OrderController {
     public String orderDetails(@PathVariable Long id, Model model) {
         model.addAttribute("order", orderService.getOrderById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found")));
+        model.addAttribute("activeTasks", workflowService.getActiveTasksForOrder(id));
+        model.addAttribute("approvalDTO", new OrderApprovalDTO());
         return "orders/details";
     }
 

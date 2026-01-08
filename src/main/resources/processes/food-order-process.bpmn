@@ -37,7 +37,21 @@
             <documentation>Refrigerated food requires safety compliance approval</documentation>
         </userTask>
 
-        <sequenceFlow id="flow3" sourceRef="foodSafetyApproval" targetRef="processPayment"/>
+        <sequenceFlow id="flow3" sourceRef="foodSafetyApproval" targetRef="checkFoodSafetyApproval"/>
+
+        <exclusiveGateway id="checkFoodSafetyApproval" name="Approved?"/>
+
+        <sequenceFlow id="foodSafetyApproved" name="Yes" sourceRef="checkFoodSafetyApproval" targetRef="processPayment">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${approved == true}]]>
+            </conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="foodSafetyRejected" name="No" sourceRef="checkFoodSafetyApproval" targetRef="end">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${approved == false}]]>
+            </conditionExpression>
+        </sequenceFlow>
 
         <!-- Payment Processing Service Task -->
         <serviceTask id="processPayment" name="Process Payment"

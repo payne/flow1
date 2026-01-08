@@ -1,0 +1,15 @@
+digraph {
+	graph [bgcolor=white rankdir=LR]
+	130366214160016 [label="" fillcolor=green fontsize=12 shape=circle style=filled]
+	130366214701616 [label="Validate Order" fontsize=12 shape=box]
+	130366213573280 [label="Process Payment" fontsize=12 shape=box]
+	130366214713856 [label="Fulfill Order" fontsize=12 shape=box]
+	130366214309072 [label="Ship Clothing Order" fontsize=12 shape=box]
+	130366214309408 [label="" fillcolor=orange fontsize=12 shape=circle style=filled]
+	130366214160016 -> 130366214701616
+	130366214701616 -> 130366213573280
+	130366213573280 -> 130366214713856
+	130366214713856 -> 130366214309072
+	130366214309072 -> 130366214309408
+	overlap=false
+}

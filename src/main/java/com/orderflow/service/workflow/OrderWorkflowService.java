@@ -17,6 +17,8 @@ public interface OrderWorkflowService {
 
     List<Task> getActiveTasksForOrder(Long orderId);
 
+    Task getTask(String taskId);
+
     void completeTask(String taskId, Map<String, Object> variables);
 
     List<Task> getPendingApprovalTasks();

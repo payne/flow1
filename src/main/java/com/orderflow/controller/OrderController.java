@@ -1,5 +1,6 @@
 package com.orderflow.controller;
 
+import com.orderflow.dto.OrderApprovalDTO;
 import com.orderflow.dto.OrderDTO;
 import com.orderflow.dto.OrderItemDTO;
 import com.orderflow.service.CustomerService;
@@ -55,5 +56,11 @@ public class OrderController {
     public String createOrder(@ModelAttribute OrderDTO orderDTO) {
         orderService.createOrder(orderDTO);
         return "redirect:/orders";
+    }
+
+    @PostMapping("/{id}/tasks/{taskId}/complete")
+    public String completeTask(@PathVariable Long id, @PathVariable String taskId, @ModelAttribute OrderApprovalDTO approvalDTO) {
+        orderService.approveOrder(id, taskId, approvalDTO);
+        return "redirect:/orders/" + id;
     }
 }

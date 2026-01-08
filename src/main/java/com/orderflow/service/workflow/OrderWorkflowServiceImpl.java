@@ -95,6 +95,11 @@ public class OrderWorkflowServiceImpl implements OrderWorkflowService {
     }
 
     @Override
+    public Task getTask(String taskId) {
+        return taskService.createTaskQuery().taskId(taskId).singleResult();
+    }
+
+    @Override
     public void completeTask(String taskId, Map<String, Object> variables) {
         taskService.complete(taskId, variables);
     }

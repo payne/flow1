@@ -1,12 +1,15 @@
 package com.orderflow.service;
 
 import com.orderflow.domain.*;
+import com.orderflow.dto.OrderApprovalDTO;
 import com.orderflow.dto.OrderDTO;
 import com.orderflow.dto.OrderItemDTO;
+import com.orderflow.repository.ApprovalRepository;
 import com.orderflow.repository.CustomerRepository;
 import com.orderflow.repository.ItemRepository;
 import com.orderflow.repository.OrderRepository;
 import com.orderflow.service.workflow.OrderWorkflowService;
+import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +39,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderWorkflowService workflowService;
+
+    @Autowired
+    private ApprovalRepository approvalRepository;
 
     @Override
     public Order createOrder(OrderDTO orderDTO) {
@@ -141,6 +147,31 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void cancelOrder(Long orderId) {
         updateOrderStatus(orderId, OrderStatus.CANCELLED);
+    }
+
+    @Override
+    public void approveOrder(Long orderId, String taskId, OrderApprovalDTO approvalDTO) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        Task task = workflowService.getTask(taskId);
+        String taskName = (task != null) ? task.getName() : "Unknown Task";
+
+        // Create approval record
+        Approval approval = new Approval();
+        approval.setOrder(order);
+        approval.setApproved(approvalDTO.getApproved());
+        approval.setApprovalComments(approvalDTO.getComments());
+        approval.setApprovalType(taskName);
+        approval.setApproverName("System User"); // Should come from security context in real app
+        approval.setApprovedAt(LocalDateTime.now());
+
+        approvalRepository.save(approval);
+
+        // Complete task in Flowable
+        java.util.Map<String, Object> variables = new java.util.HashMap<>();
+        variables.put("approved", approvalDTO.getApproved());
+        workflowService.completeTask(taskId, variables);
     }
 
     /**

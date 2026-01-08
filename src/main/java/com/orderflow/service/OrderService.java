@@ -2,6 +2,7 @@ package com.orderflow.service;
 
 import com.orderflow.domain.Order;
 import com.orderflow.domain.OrderStatus;
+import com.orderflow.dto.OrderApprovalDTO;
 import com.orderflow.dto.OrderDTO;
 
 import java.util.List;
@@ -27,4 +28,6 @@ public interface OrderService {
     Order updateOrderStatus(Long orderId, OrderStatus status);
 
     void cancelOrder(Long orderId);
+
+    void approveOrder(Long orderId, String taskId, OrderApprovalDTO approvalDTO);
 }

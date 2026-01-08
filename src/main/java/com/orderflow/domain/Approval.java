@@ -1,6 +1,7 @@
 package com.orderflow.domain;
 
 import jakarta.persistence.*;
+import lombok.ToString;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ public class Approval {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
+    @ToString.Exclude
     private Order order;
 
     @Column(name = "approval_type", nullable = false, length = 50)

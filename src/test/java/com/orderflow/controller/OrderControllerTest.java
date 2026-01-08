@@ -1,7 +1,10 @@
 package com.orderflow.controller;
 
 import com.orderflow.domain.Customer;
+import com.orderflow.domain.Item;
+import com.orderflow.domain.ItemCategory;
 import com.orderflow.domain.Order;
+import com.orderflow.domain.OrderItem;
 import com.orderflow.dto.OrderApprovalDTO;
 import com.orderflow.service.CustomerService;
 import com.orderflow.service.InventoryService;
@@ -68,7 +71,31 @@ public class OrderControllerTest {
                 .andExpect(view().name("orders/details"))
                 .andExpect(model().attributeExists("order"))
                 .andExpect(model().attributeExists("activeTasks"))
-                .andExpect(model().attributeExists("approvalDTO"));
+                .andExpect(model().attributeExists("approvalDTO"))
+                .andExpect(model().attributeDoesNotExist("processImageUrl"));
+    }
+
+    @Test
+    public void testOrderDetailsWithFoodCategory() throws Exception {
+        Order order = new Order();
+        order.setId(1L);
+        order.setCustomer(new Customer());
+
+        Item foodItem = new Item();
+        foodItem.setCategory(ItemCategory.FOOD);
+
+        OrderItem orderItem = new OrderItem();
+        orderItem.setItem(foodItem);
+        order.addOrderItem(orderItem);
+
+        when(orderService.getOrderById(anyLong())).thenReturn(Optional.of(order));
+        when(orderWorkflowService.getActiveTasksForOrder(anyLong())).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/orders/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("orders/details"))
+                .andExpect(model().attributeExists("processImageUrl"))
+                .andExpect(model().attribute("processImageUrl", "/images/processes/food-order-process.png"));
     }
 
     @Test

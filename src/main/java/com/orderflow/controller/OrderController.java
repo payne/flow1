@@ -38,10 +38,18 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public String orderDetails(@PathVariable Long id, Model model) {
-        model.addAttribute("order", orderService.getOrderById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found")));
+        var order = orderService.getOrderById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        model.addAttribute("order", order);
         model.addAttribute("activeTasks", workflowService.getActiveTasksForOrder(id));
         model.addAttribute("approvalDTO", new OrderApprovalDTO());
+
+        // Add process image URL if category exists
+        if (order.getPrimaryCategory() != null) {
+            String processKey = order.getPrimaryCategory().getProcessKey();
+            model.addAttribute("processImageUrl", "/images/processes/" + processKey + ".png");
+        }
+
         return "orders/details";
     }
 

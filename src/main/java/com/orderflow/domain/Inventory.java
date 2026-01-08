@@ -3,7 +3,9 @@ package com.orderflow.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -24,6 +26,8 @@ public class Inventory {
 
     @OneToOne
     @JoinColumn(name = "item_id", nullable = false, unique = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Item item;
 
     @Column(name = "quantity_available", nullable = false)

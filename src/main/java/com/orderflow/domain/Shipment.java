@@ -1,6 +1,8 @@
 package com.orderflow.domain;
 
 import jakarta.persistence.*;
+import lombok.ToString;
+import lombok.EqualsAndHashCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +26,8 @@ public class Shipment {
 
     @OneToOne
     @JoinColumn(name = "order_id", nullable = false, unique = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Order order;
 
     @Column(name = "tracking_number", length = 100)

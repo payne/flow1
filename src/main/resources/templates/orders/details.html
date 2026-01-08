@@ -136,6 +136,17 @@
             </table>
         </div>
     </div>
+
+    <!-- Workflow Diagram Section -->
+    <div class="mt-5 mb-5" th:if="${processImageUrl}">
+        <h3>Workflow Process</h3>
+        <div class="card">
+            <div class="card-body text-center">
+                <img th:src="@{${processImageUrl}}" class="img-fluid" alt="Workflow Process Diagram" style="max-width: 100%;">
+                <p class="text-muted mt-2">Reference workflow for this order type.</p>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>
